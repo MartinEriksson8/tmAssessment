@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "/home/martin/.pyenv/versions/3.12.3/tmAssessment/bin/python",
+    "python.analysis.extraPaths": ["${workspaceFolder}"],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black"
+} 
