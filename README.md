@@ -23,7 +23,13 @@ source tmAssessment/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Run the development server:
+3. Configure environment variables:
+Create a `.env` file in the project root with the following content:
+```bash
+DATABASE_URL=sqlite:///./data/app.db
+```
+
+4. Run the development server:
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -43,4 +49,15 @@ Once the server is running, you can find the interactive API docs at:
 - SQLAlchemy
 - Pydantic
 - pytest (for testing)
+
+## Project Structure
+
+- `app/` - Main application code
+  - `api/` - API endpoints
+  - `models/` - Database models
+  - `schemas/` - Pydantic models
+  - `config.py` - Configuration and environment variables
+  - `database.py` - Database connection and session management
+- `data/` - Database files
+- `tests/` - Test files
 
