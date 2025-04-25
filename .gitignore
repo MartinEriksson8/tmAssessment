@@ -51,6 +51,7 @@ log/
 # Local development
 *.sqlite
 *.db
+*.db.backup
 .DS_Store
 .env.local
 .env.development.local

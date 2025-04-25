@@ -10,6 +10,18 @@ router = APIRouter()
 
 @router.post("/users/", response_model=User)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    """
+    Create a new user.
+    
+    Args:
+        user (UserCreate): User data including email, username, and password
+        
+    Returns:
+        User: The created user object
+        
+    Raises:
+        HTTPException: 400 if email or username is already registered
+    """
     # Check if email exists
     db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
     if db_user:
@@ -24,8 +36,8 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = UserModel(
         email=user.email,
         username=user.username,
-        hashed_password=user.password  #plaintext for now TODO: Add hashing
     )
+    db_user.set_password(user.password)  # This will hash the password
     
     db.add(db_user)
     db.commit()
@@ -35,12 +47,30 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.get("/users/", response_model=List[User])
 async def read_users(db: Session = Depends(get_db)):
+    """
+    Get a list of all users.
+    
+    Returns:
+        List[User]: List of all users in the system
+    """
     # Get all users from db
     users = db.query(UserModel).all()
     return users
 
 @router.get("/users/{user_id}", response_model=User)
 async def read_user(user_id: int, db: Session = Depends(get_db)):
+    """
+    Get a specific user by ID.
+    
+    Args:
+        user_id (int): The ID of the user to retrieve
+        
+    Returns:
+        User: The requested user object
+        
+    Raises:
+        HTTPException: 404 if user is not found
+    """
     # Get single user by id
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if db_user is None:
@@ -49,6 +79,21 @@ async def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/users/{user_id}", response_model=User)
 async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
+    """
+    Update an existing user.
+    
+    Args:
+        user_id (int): The ID of the user to update
+        user_update (UserUpdate): The updated user data
+        
+    Returns:
+        User: The updated user object
+        
+    Raises:
+        HTTPException: 404 if user is not found
+        HTTPException: 400 if email or username is already taken by another user
+        HTTPException: 400 if there's a conflict with existing data
+    """
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -87,6 +132,18 @@ async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depen
 
 @router.delete("/users/{user_id}", response_model=User)
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    """
+    Delete a user.
+    
+    Args:
+        user_id (int): The ID of the user to delete
+        
+    Returns:
+        User: The deleted user object
+        
+    Raises:
+        HTTPException: 404 if user is not found
+    """
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
