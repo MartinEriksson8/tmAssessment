@@ -12,7 +12,7 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     
-    bookmarks = relationship("Bookmark", back_populates="user")
+    bookmarks = relationship("Bookmark", back_populates="user", cascade="all, delete-orphan")
 
     def verify_password(self, plain_password: str) -> bool:
         """

@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 from typing import Optional
+from datetime import datetime
 
 from app.dependencies import get_db
 from app.models.user import User
@@ -31,16 +32,45 @@ async def get_current_user(
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
+        
+        # Check if token is expired
+        exp = payload.get("exp")
+        if exp is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has no expiration time",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            
+        if datetime.utcnow().timestamp() > exp:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has expired",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            
         username: str = payload.get("sub")
         if username is None:
-            raise credentials_exception
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token has no subject (username)",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         
         # Get the user from the database
         user = db.query(User).filter(User.username == username).first()
         if user is None:
-            raise credentials_exception
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
             
         return user
         
-    except JWTError:
-        raise credentials_exception 
+    except JWTError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid token: {str(e)}",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) 

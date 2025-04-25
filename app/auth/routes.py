@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
 from app.models.user import User
-from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from jose import jwt
+from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.auth.security import create_access_token
 
 router = APIRouter()
 
@@ -33,10 +33,9 @@ async def login(
     
     # Create token
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = jwt.encode(
-        {"sub": user.username},
-        SECRET_KEY,
-        algorithm=ALGORITHM
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=access_token_expires
     )
     
     return {

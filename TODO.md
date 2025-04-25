@@ -11,9 +11,9 @@ Data must be persisted in an SQL-Database (for development Sqlite is OK, for pro
 	- [✓] CRUD for Bookmarks
 		- [✓] Users should be able to manage their own bookmarks
 		- [✓] Users should not be able to manage other users' bookmarks
-- [ ] Create a reasonable Readme.md
-- [ ] Code must be testable
-- [ ] Tests must be in place
+- [✓] Create a reasonable Readme.md
+- [✓] Code must be testable
+- [✓] Tests must be in place
 - [ ] Optional
 	- [ ] Update the application to log (important) events
 	- [ ] Create a deployment pipeline to build a Docker-Image
