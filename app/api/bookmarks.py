@@ -10,7 +10,7 @@ from app.models.user import User
 
 router = APIRouter()
 
-@router.post("/", response_model=Bookmark)
+@router.post("/", response_model=Bookmark, status_code=201)
 async def create_bookmark(
     bookmark: BookmarkCreate,
     db: Session = Depends(get_db),
@@ -121,7 +121,7 @@ async def update_bookmark(
     db.refresh(db_bookmark)
     return db_bookmark
 
-@router.delete("/{bookmark_id}")
+@router.delete("/{bookmark_id}", status_code=204)
 async def delete_bookmark(
     bookmark_id: int,
     db: Session = Depends(get_db),
@@ -132,9 +132,6 @@ async def delete_bookmark(
     
     Args:
         bookmark_id (int): The ID of the bookmark to delete
-        
-    Returns:
-        dict: A message confirming the deletion
         
     Raises:
         HTTPException: 404 if bookmark is not found
@@ -149,4 +146,4 @@ async def delete_bookmark(
     
     db.delete(bookmark)
     db.commit()
-    return {"message": "Bookmark deleted successfully"}
+    return None

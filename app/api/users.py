@@ -8,7 +8,7 @@ from typing import List
 
 router = APIRouter()
 
-@router.post("/users/", response_model=User)
+@router.post("/users/", response_model=User, status_code=201)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """
     Create a new user.
@@ -116,6 +116,12 @@ async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depen
             raise HTTPException(status_code=400, detail="Username already taken by another user")
     
     update_data = user_update.model_dump(exclude_unset=True)
+    
+    # Handle password update separately to ensure it's hashed
+    if "password" in update_data:
+        db_user.set_password(update_data.pop("password"))
+    
+    # Update other fields
     for field, value in update_data.items():
         setattr(db_user, field, value)
     
@@ -130,16 +136,13 @@ async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depen
             detail="Could not update user due to a conflict with existing data"
         )
 
-@router.delete("/users/{user_id}", response_model=User)
+@router.delete("/users/{user_id}", status_code=204)
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
     """
     Delete a user.
     
     Args:
         user_id (int): The ID of the user to delete
-        
-    Returns:
-        User: The deleted user object
         
     Raises:
         HTTPException: 404 if user is not found
@@ -150,4 +153,4 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)):
     
     db.delete(db_user)
     db.commit()
-    return db_user
+    return None

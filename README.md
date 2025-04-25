@@ -4,9 +4,9 @@ A simple API to manage bookmarks. Users can create accounts and manage their own
 
 ## What's in it
 
-- FastAPI backend - Under construction
-- User authentication - Under construction
-- CRUD operations for bookmarks - Under construction
+- FastAPI backend 
+- User authentication 
+- CRUD operations for bookmarks 
 - SQLite database (with PostgreSQL support ready) - Under construction
 - Docker and Kubernetes support - Under construction
 
@@ -61,3 +61,4 @@ Once the server is running, you can find the interactive API docs at:
 - `data/` - Database files
 - `tests/` - Test files
 
+f
