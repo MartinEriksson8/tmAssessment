@@ -91,13 +91,38 @@ Once the server is running, you can find the interactive API docs at:
 
 ## Project Structure
 
-- `app/` - Main application code
-  - `api/` - API endpoints
-  - `models/` - Database models
-  - `schemas/` - Pydantic models
-  - `config.py` - Configuration and environment variables
-  - `database.py` - Database connection and session management
-- `data/` - Database files (SQLite)
-- `tests/` - Test files
-
-f
+```
+.
+├── app/                    # Main application code
+│   ├── api/               # API endpoints and routers
+│   │   ├── users.py       # User-related endpoints
+│   │   ├── bookmarks.py   # Bookmark-related endpoints
+│   │   └── auth.py        # Authentication endpoints
+│   ├── auth/              # Authentication module
+│   │   ├── deps.py        # Authentication dependencies
+│   │   └── security.py    # Security utilities (JWT, password hashing)
+│   ├── models/            # SQLAlchemy database models
+│   │   ├── user.py        # User model
+│   │   └── bookmark.py    # Bookmark model
+│   ├── schemas/           # Pydantic models for request/response validation
+│   │   ├── user.py        # User schemas
+│   │   └── bookmark.py    # Bookmark schemas
+│   ├── config.py          # Application configuration
+│   ├── database.py        # Database connection and session management
+│   ├── dependencies.py    # Common dependencies
+│   └── main.py            # FastAPI application entry point
+├── tests/                 # Test files
+│   ├── test_auth.py       # Authentication tests
+│   ├── test_bookmarks.py  # Bookmark operation tests
+│   ├── test_db.py         # Database tests
+│   ├── test_users.py      # User operation tests
+│   └── conftest.py        # Test configuration and fixtures
+├── data/                  # Database files (SQLite)
+├── docker/                # Docker configuration
+├── k8s/                   # Kubernetes configuration
+├── .env                   # Environment variables
+├── .gitignore            # Git ignore rules
+├── .python-version       # Python version specification
+├── requirements.txt      # Project dependencies
+└── README.md            # Project documentation
+```
